@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Створення публікації</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <h1>Створення публікації</h1>
+
+    <div class="layout">
+      <form id="post-form" action="#" method="post">
+
+        <div class="field">
+          <label for="title">Назва</label>
+          <input id="title" name="title" type="text" required minlength="3" maxlength="80"
+                 placeholder="Наприклад, Світанок у Карпатах" aria-describedby="title-hint">
+          <span class="hint" id="title-hint">Від 3 до 80 символів</span>
+        </div>
+
+        <div class="field">
+          <label for="description">Опис</label>
+          <textarea id="description" name="description" rows="4" required minlength="10" maxlength="500"
+                    placeholder="Розкажіть, що на зображенні" aria-describedby="desc-hint"></textarea>
+          <span class="hint" id="desc-hint">Від 10 до 500 символів</span>
+        </div>
+
+        <div class="field">
+          <label for="category">Категорія</label>
+          <select id="category" name="category" required aria-describedby="cat-hint">
+            <option value="">Оберіть категорію</option>
+            <option value="Пейзаж">Пейзаж</option>
+            <option value="Портрет">Портрет</option>
+            <option value="Архітектура">Архітектура</option>
+            <option value="Ілюстрація">Ілюстрація</option>
+          </select>
+          <span class="hint" id="cat-hint">Категорію потрібно вибрати</span>
+        </div>
+
+        <div class="field">
+          <label for="media">Зображення</label>
+          <input id="media" name="media" type="file" accept="image/*" required aria-describedby="media-hint">
+          <span class="hint" id="media-hint">Формати JPG, PNG або WebP</span>
+        </div>
+
+        <div class="toggle">
+          <input id="private" name="private" type="checkbox" role="switch">
+          <label for="private">Приватний доступ</label>
+        </div>
+
+        <div class="actions">
+          <button type="reset" class="btn btn-secondary">Скасувати</button>
+          <button type="submit" class="btn btn-primary">Опублікувати</button>
+        </div>
+      </form>
+
+      <aside class="preview" aria-label="Попередній перегляд">
+        <figure class="card">
+          <img id="preview-img" src="placeholder.svg" alt="Попередній перегляд зображення" width="640" height="360">
+          <figcaption>
+            <strong id="preview-title">Назва публікації</strong>
+            <span class="meta">
+              <span id="preview-category">Категорія</span>
+              <span id="preview-access" class="badge">Публічна</span>
+            </span>
+          </figcaption>
+        </figure>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('post-form');
+    const $ = (id) => document.getElementById(id);
+    let url = null;
+
+    $('title').addEventListener('input', (e) => {
+      $('preview-title').textContent = e.target.value.trim() || 'Назва публікації';
+    });
+    $('category').addEventListener('change', (e) => {
+      $('preview-category').textContent = e.target.value || 'Категорія';
+    });
+    $('private').addEventListener('change', (e) => {
+      $('preview-access').textContent = e.target.checked ? 'Приватна' : 'Публічна';
+    });
+    $('media').addEventListener('change', (e) => {
+      if (url) URL.revokeObjectURL(url);
+      const file = e.target.files[0];
+      url = file ? URL.createObjectURL(file) : null;
+      $('preview-img').src = url || 'placeholder.svg';
+    });
+    form.addEventListener('reset', () => {
+      if (url) URL.revokeObjectURL(url);
+      url = null;
+      $('preview-img').src = 'placeholder.svg';
+      $('preview-title').textContent = 'Назва публікації';
+      $('preview-category').textContent = 'Категорія';
+      $('preview-access').textContent = 'Публічна';
+    });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Публікацію створено');
+      form.reset();
+    });
+  </script>
+</body>
+</html>
